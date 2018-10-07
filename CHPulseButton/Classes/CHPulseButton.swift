@@ -10,11 +10,11 @@ import Foundation
 import UIKit
 import QuartzCore
 
-@IBDesignable open class CHPulseButton: UIControl {
+@IBDesignable open class CHPulseButton: UIButton {
     
     var pulseView = UIView()
     var button = UIButton()
-    var imageView = UIImageView()
+    var pulseImageView = UIImageView()
     
     open var isAnimating = false
     
@@ -25,16 +25,16 @@ import QuartzCore
     @IBInspectable open var contentImageScale : Int = 0 {
         didSet {
             guard let contentMode = UIView.ContentMode(rawValue: contentImageScale) else { return }
-            imageView.contentMode = contentMode
+            pulseImageView.contentMode = contentMode
         }
     }
     
     @IBInspectable open var image: UIImage? {
         get {
-            return imageView.image
+            return pulseImageView.image
         }
         set(image) {
-            imageView.image = image
+            pulseImageView.image = image
         }
     }
     
@@ -64,7 +64,7 @@ import QuartzCore
         }
     }
     
-    @IBInspectable open var pulsePercent: Float = 1.2
+    @IBInspectable open var pulsePercent: Float = 120
     @IBInspectable open var pulseAlpha: Float = 1.0 {
         didSet {
             pulseView.alpha = CGFloat(pulseAlpha)
@@ -79,7 +79,7 @@ import QuartzCore
                 cornerRadius = 0
             } else {
                 button.layer.cornerRadius = cornerRadius - pulseMargin
-                imageView.layer.cornerRadius = cornerRadius - pulseMargin
+                pulseImageView.layer.cornerRadius = cornerRadius - pulseMargin
                 pulseView.layer.cornerRadius = cornerRadius
             }
         }
@@ -91,7 +91,7 @@ import QuartzCore
         let anim  = CABasicAnimation(keyPath: "transform.scale")
         anim.duration = 1
         anim.fromValue = 1
-        anim.toValue = 1 * pulsePercent
+        anim.toValue = 1 * (pulsePercent / 100)
         anim.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
         anim.autoreverses = true
         anim.repeatCount = FLT_MAX
@@ -105,11 +105,11 @@ import QuartzCore
         if isCircle {
             button.layer.cornerRadius = 0.5 * button.bounds.size.width
             pulseView.layer.cornerRadius = 0.5 * pulseView.bounds.size.width
-            imageView.layer.cornerRadius = 0.5 * imageView.bounds.size.width
+            pulseImageView.layer.cornerRadius = 0.5 * pulseImageView.bounds.size.width
             
             button.clipsToBounds = true
             pulseView.clipsToBounds = true
-            imageView.clipsToBounds = true
+            pulseImageView.clipsToBounds = true
         }
     }
     
@@ -130,8 +130,8 @@ import QuartzCore
         button.frame = CGRect(x: pulseMargin/2, y: pulseMargin/2, width: bounds.size.width - pulseMargin, height: bounds.size.height - pulseMargin)
         addSubview(button)
         
-        imageView.frame = CGRect(x: pulseMargin/2, y: pulseMargin/2, width: bounds.size.width - pulseMargin, height: bounds.size.height - pulseMargin)
-        addSubview(imageView)
+        pulseImageView.frame = CGRect(x: pulseMargin/2, y: pulseMargin/2, width: bounds.size.width - pulseMargin, height: bounds.size.height - pulseMargin)
+        addSubview(pulseImageView)
         
         for target in allTargets {
             let targetActions = actions(forTarget: target, forControlEvent: UIControl.Event.touchUpInside)
